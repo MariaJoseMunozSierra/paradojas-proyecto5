@@ -34,15 +34,14 @@ function Ranking() {
   ];
 
   return (
-    <div>
+    <div className="contenedor">
       <h1>Ranking de Filósofos</h1>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 16 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
         {categorias.map((cat) => (
-          <div key={cat.titulo} style={{ border: "1px solid #333", borderRadius: 4, padding: 12 }}>
-            <h3>{cat.titulo}</h3>
+          <div key={cat.titulo} className="tarjeta-paradoja">
             <ol>
               {cat.lista.slice(0, 5).map((u) => (
-                <li key={u.id}>{u.username} — {cat.valor(u)}</li>
+                <li key={u.id}>{u.username} - {cat.valor(u)}</li>
               ))}
             </ol>
           </div>

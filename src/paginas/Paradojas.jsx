@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { paradojas } from "../datos/datosFalsos";
 
 function Paradojas() {
@@ -7,7 +8,8 @@ function Paradojas() {
       <ul>
         {paradojas.map((unaParadoja) => (
           <li key={unaParadoja.id}>
-            {unaParadoja.titulo} — {unaParadoja.categoria} — {unaParadoja.estado}
+            <Link to={"/paradojas/" + unaParadoja.id}>{unaParadoja.titulo}</Link>
+            {" / " + unaParadoja.categoria + " / " + unaParadoja.estado}
           </li>
         ))}
       </ul>

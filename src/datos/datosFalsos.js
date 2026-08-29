@@ -1,18 +1,18 @@
 export const escuelas = ["Esceptico", "Estoico", "Existencialista"];
 
 export const usuarios = [
-  { id: 1, username: "esceptico_1", password: "password123", escuela: "Esceptico", paradox_score: 0, chaos_index: 0 },
-  { id: 2, username: "esceptico_2", password: "password123", escuela: "Esceptico", paradox_score: 0, chaos_index: 0 },
-  { id: 3, username: "esceptico_3", password: "password123", escuela: "Esceptico", paradox_score: 0, chaos_index: 0 },
-  { id: 4, username: "esceptico_4", password: "password123", escuela: "Esceptico", paradox_score: 0, chaos_index: 0 },
-  { id: 5, username: "estoico_1", password: "password123", escuela: "Estoico", paradox_score: 0, chaos_index: 0 },
-  { id: 6, username: "estoico_2", password: "password123", escuela: "Estoico", paradox_score: 0, chaos_index: 0 },
-  { id: 7, username: "estoico_3", password: "password123", escuela: "Estoico", paradox_score: 0, chaos_index: 0 },
-  { id: 8, username: "estoico_4", password: "password123", escuela: "Estoico", paradox_score: 0, chaos_index: 0 },
-  { id: 9, username: "existencialista_1", password: "password123", escuela: "Existencialista", paradox_score: 0, chaos_index: 0 },
-  { id: 10, username: "existencialista_2", password: "password123", escuela: "Existencialista", paradox_score: 0, chaos_index: 0 },
-  { id: 11, username: "existencialista_3", password: "password123", escuela: "Existencialista", paradox_score: 0, chaos_index: 0 },
-  { id: 12, username: "existencialista_4", password: "password123", escuela: "Existencialista", paradox_score: 0, chaos_index: 0 },
+  { id: 1, username: "Usuario1", password: "123456", escuela: "Esceptico", paradox_score: 0, chaos_index: 0 },
+  { id: 2, username: "Usuario2", password: "123456", escuela: "Esceptico", paradox_score: 0, chaos_index: 0 },
+  { id: 3, username: "Usuario3", password: "123456", escuela: "Esceptico", paradox_score: 0, chaos_index: 0 },
+  { id: 4, username: "Usuario4", password: "123456", escuela: "Esceptico", paradox_score: 0, chaos_index: 0 },
+  { id: 5, username: "Usuario5", password: "123456", escuela: "Estoico", paradox_score: 0, chaos_index: 0 },
+  { id: 6, username: "Usuario6", password: "123456", escuela: "Estoico", paradox_score: 0, chaos_index: 0 },
+  { id: 7, username: "Usuario7", password: "123456", escuela: "Estoico", paradox_score: 0, chaos_index: 0 },
+  { id: 8, username: "Usuario8", password: "123456", escuela: "Estoico", paradox_score: 0, chaos_index: 0 },
+  { id: 9, username: "Usuario9", password: "123456", escuela: "Existencialista", paradox_score: 0, chaos_index: 0 },
+  { id: 10, username: "Usuario10", password: "123456", escuela: "Existencialista", paradox_score: 0, chaos_index: 0 },
+  { id: 11, username: "Usuario11", password: "123456", escuela: "Existencialista", paradox_score: 0, chaos_index: 0 },
+  { id: 12, username: "Usuario12", password: "123456", escuela: "Existencialista", paradox_score: 0, chaos_index: 0 },
 ];
 
 export const paradojas = [
