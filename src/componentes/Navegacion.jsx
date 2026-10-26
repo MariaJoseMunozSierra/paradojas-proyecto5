@@ -1,11 +1,15 @@
 import { Link } from "react-router-dom";
-import { useAuth } from "../contexto/ContextoAutenticacion";
+import { useDispatch, useSelector } from "react-redux";
+import { cerrarSesion } from "../redux/authSlice";
 
 function Navegacion() {
-  const autentificacion = useAuth();
+  const dispatch = useDispatch();
+  const usuario = useSelector(function (state) {
+    return state.auth.usuario;
+  });
 
-  function cerrarSesion() {
-    autentificacion.setUsuario(null);
+  function manejarCerrarSesion() {
+    dispatch(cerrarSesion());
   }
 
   return (
@@ -15,7 +19,8 @@ function Navegacion() {
       <Link to="/crear">Crear Paradoja</Link>
       {" | "}
       <Link to="/ranking">Ranking</Link>
-      {autentificacion.usuario === null ? (
+
+      {usuario === null ? (
         <span>
           {" | "}
           <Link to="/login">Iniciar sesión</Link>
@@ -27,7 +32,7 @@ function Navegacion() {
           {" | "}
           <Link to="/perfil">Mi Perfil</Link>
           {" | "}
-          <button onClick={cerrarSesion}>Cerrar sesión</button>
+          <button onClick={manejarCerrarSesion}>Cerrar sesión</button>
         </span>
       )}
     </nav>

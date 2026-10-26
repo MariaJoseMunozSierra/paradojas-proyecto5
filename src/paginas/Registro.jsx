@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { usuarios } from "../datos/datosFalsos";
+import { useDispatch, useSelector } from "react-redux";
+import { registro } from "../redux/authSlice";
 import { escuelas } from "../datos/datosFalsos";
-import { useAuth } from "../contexto/ContextoAutenticacion";
 
 function Registro() {
   const [username, setUsername] = useState("");
@@ -10,44 +10,30 @@ function Registro() {
   const [escuela, setEscuela] = useState(escuelas[0]);
   const [mensajeError, setMensajeError] = useState("");
 
-  const autentificacion = useAuth();
+  const dispatch = useDispatch();
   const navegar = useNavigate();
+  const cargando = useSelector(function (state) {
+    return state.auth.cargando;
+  });
 
   function manejarSubmit(evento) {
     evento.preventDefault();
     setMensajeError("");
-
-    let yaExiste = false;
-    for (let i = 0; i < usuarios.length; i++) {
-      if (usuarios[i].username === username) {
-        yaExiste = true;
-      }
-    }
-
-    if (yaExiste === true) {
-      setMensajeError("Ese usuario ya existe");
-      return;
-    }
 
     if (username === "" || password === "") {
       setMensajeError("Faltan datos");
       return;
     }
 
-    let nuevoId = usuarios.length + 1;
-    let nuevoUsuario = {
-      id: nuevoId,
-      username: username,
-      password: password,
-      escuela: escuela,
-      paradox_score: 0,
-      chaos_index: 0,
-    };
-
-    usuarios.push(nuevoUsuario);
-
-    autentificacion.setUsuario(nuevoUsuario);
-    navegar("/perfil");
+    dispatch(registro({ username: username, password: password, escuela: escuela })).then(
+      function (resultado) {
+        if (registro.fulfilled.match(resultado)) {
+          navegar("/perfil");
+        } else {
+          setMensajeError(resultado.payload);
+        }
+      }
+    );
   }
 
   return (
@@ -63,7 +49,7 @@ function Registro() {
           />
         </div>
         <div>
-          <label>Contraseña :</label>
+          <label>Contraseña:</label>
           <input
             type="password"
             value={password}
@@ -71,15 +57,16 @@ function Registro() {
           />
         </div>
         <div>
-          <label>Escuela filosofica :</label>
+          <label>Escuela filosófica:</label>
           <select value={escuela} onChange={(evento) => setEscuela(evento.target.value)}>
             {escuelas.map((unaEscuela) => (
               <option key={unaEscuela} value={unaEscuela}>{unaEscuela}</option>
             ))}
           </select>
         </div>
-        {mensajeError !== "" && <p style={{ color: "red" }}>{mensajeError}</p>}
-        <button type="submit">Registrarme</button>
+        {mensajeError !== "" && <p className="mensaje-error">{mensajeError}</p>}
+        {cargando && <p>Creando cuenta...</p>}
+        <button type="submit" disabled={cargando}>Registrarme</button>
       </form>
     </div>
   );

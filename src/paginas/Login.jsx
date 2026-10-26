@@ -1,39 +1,32 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { usuarios } from "../datos/datosFalsos";
-import { useAuth } from "../contexto/ContextoAutenticacion";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../redux/authSlice";
 
 function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [mensajeError, setMensajeError] = useState("");
 
-  const autentificacion = useAuth();
+  const dispatch = useDispatch();
   const navegar = useNavigate();
+  const cargando = useSelector(function (state) {
+    return state.auth.cargando;
+  });
 
   function manejarSubmit(evento) {
     evento.preventDefault();
     setMensajeError("");
 
-    let usuarioEncontrado = null;
-    for (let i = 0; i < usuarios.length; i++) {
-      if (usuarios[i].username === username) {
-        usuarioEncontrado = usuarios[i];
+    dispatch(login({ username: username, password: password })).then(
+      function (resultado) {
+        if (login.fulfilled.match(resultado)) {
+          navegar("/perfil");
+        } else {
+          setMensajeError(resultado.payload);
+        }
       }
-    }
-
-    if (usuarioEncontrado === null) {
-      setMensajeError("Este usuario no existe");
-      return;
-    }
-
-    if (usuarioEncontrado.password !== password) {
-      setMensajeError("Contraseña incorrecta");
-      return;
-    }
-
-    autentificacion.setUsuario(usuarioEncontrado);
-    navegar("/perfil");
+    );
   }
 
   return (
@@ -41,7 +34,7 @@ function Login() {
       <h1>Iniciar sesión</h1>
       <form onSubmit={manejarSubmit}>
         <div>
-          <label>Usuario :</label>
+          <label>Usuario:</label>
           <input
             type="text"
             value={username}
@@ -49,17 +42,19 @@ function Login() {
           />
         </div>
         <div>
-          <label>Contraseña :</label>
+          <label>Contraseña:</label>
           <input
             type="password"
             value={password}
             onChange={(evento) => setPassword(evento.target.value)}
           />
         </div>
-        {mensajeError !== "" && <p style={{ color: "red" }}>{mensajeError}</p>}
-        <button type="submit">Entrar</button>
+        {mensajeError !== "" && <p className="mensaje-error">{mensajeError}</p>}
+        {cargando && <p>Entrando... (la primera vez puede tardar hasta 1 minuto)</p>}
+        <button type="submit" disabled={cargando}>Entrar</button>
       </form>
     </div>
   );
 }
+
 export default Login;
