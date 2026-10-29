@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { registro } from "../redux/authSlice";
-import { escuelas } from "../datos/datosFalsos";
+import { escuelas } from "../constantes";
 
 function Registro() {
   const [username, setUsername] = useState("");

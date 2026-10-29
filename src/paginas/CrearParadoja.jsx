@@ -1,64 +1,53 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { paradojas } from "../datos/datosFalsos";
-import { useAuth } from "../contexto/ContextoAutenticacion";
-
-const categorias = ["Tiempo", "Espacio", "Identidad", "Conocimiento", "Etica", "Realidad"];
+import { useDispatch, useSelector } from "react-redux";
+import { crearParadoja } from "../redux/paradojasSlice";
+import { categorias } from "../constantes";
 
 function CrearParadoja() {
   const [titulo, setTitulo] = useState("");
-  const [informacion, setInformacion] = useState("");
+  const [statement, setStatement] = useState("");
   const [categoria, setCategoria] = useState(categorias[0]);
   const [capa1, setCapa1] = useState("");
   const [capa2, setCapa2] = useState("");
   const [mensajeError, setMensajeError] = useState("");
 
-  const autentificacion = useAuth();
+  const dispatch = useDispatch();
   const navegar = useNavigate();
+  const usuario = useSelector(function (state) {
+    return state.auth.usuario;
+  });
+  const cargando = useSelector(function (state) {
+    return state.paradojas.cargando;
+  });
 
   function manejarSubmit(evento) {
     evento.preventDefault();
     setMensajeError("");
 
-    if (autentificacion.usuario === null) {
-      setMensajeError("Debes iniciar sesión para crear una paradoja");
-      return;
-    }
-
-    if (titulo === "" || informacion === "" || capa1 === "" || capa2 === "") {
+    if (titulo === "" || statement === "" || capa1 === "" || capa2 === "") {
       setMensajeError("Faltan datos");
       return;
     }
 
-    if (informacion.length > 300) {
-      setMensajeError("La información no puede tener más de 300 caracteres");
-      return;
-    }
-
-    let idMasAlto = 0;
-    for (let i = 0; i < paradojas.length; i++) {
-      if (paradojas[i].id > idMasAlto) {
-        idMasAlto = paradojas[i].id;
-      }
-
-    }
-    let nuevoId = idMasAlto + 1;
-
-    let nuevaParadoja = {
-      id: nuevoId,
+    const datos = {
       titulo: titulo,
-      informacion: informacion,
+      statement: statement,
       categoria: categoria,
-      creador_id: autentificacion.usuario.id,
-      estado: "Draft",
+      creador_id: usuario._id,
       capas: [
-        { id: nuevoId * 100 + 1, pregunta: capa1, profundidad: 1, puntaje: 0 },
-        { id: nuevoId * 100 + 2, pregunta: capa2, profundidad: 2, puntaje: 0 },
+        { pregunta: capa1, profundidad: 1 },
+        { pregunta: capa2, profundidad: 2 },
       ],
     };
-    paradojas.push(nuevaParadoja);
-    navegar("/");
 
+    dispatch(crearParadoja(datos)).then(function (resultado) {
+      if (crearParadoja.fulfilled.match(resultado)) {
+        navegar("/");
+      } else {
+        setMensajeError(resultado.payload);
+      }
+    });
   }
 
   return (
@@ -74,22 +63,23 @@ function CrearParadoja() {
           />
         </div>
         <div>
-          <label>Información (máx. 300 caracteres):</label>
+          <label>Statement (máx. 300 caracteres):</label>
           <textarea
-            value={informacion}
+            value={statement}
             maxLength={300}
-            onChange={(evento) => setInformacion(evento.target.value)}
+            onChange={(evento) => setStatement(evento.target.value)}
           />
-          <p>{informacion.length}/300</p>
+          <p>{statement.length}/300</p>
         </div>
         <div>
           <label>Categoría:</label>
           <select value={categoria} onChange={(evento) => setCategoria(evento.target.value)}>
-            {categorias.map((unaCategoria) => (
-              <option key={unaCategoria} value={unaCategoria}>{unaCategoria}</option>
-            ))}
+            {categorias.map(function (unaCategoria) {
+              return <option key={unaCategoria} value={unaCategoria}>{unaCategoria}</option>;
+            })}
           </select>
         </div>
+
         <h3>Capas</h3>
         <div>
           <label>Capa 1:</label>
@@ -107,8 +97,10 @@ function CrearParadoja() {
             onChange={(evento) => setCapa2(evento.target.value)}
           />
         </div>
-        {mensajeError !== "" && <p style={{ color: "red" }}>{mensajeError}</p>}
-        <button type="submit">Crear nueva paradoja</button>
+
+        {mensajeError !== "" && <p className="mensaje-error">{mensajeError}</p>}
+        {cargando && <p>Creando paradoja...</p>}
+        <button type="submit" disabled={cargando}>Crear paradoja</button>
       </form>
     </div>
   );
