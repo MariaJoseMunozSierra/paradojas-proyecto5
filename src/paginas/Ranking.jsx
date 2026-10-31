@@ -1,52 +1,81 @@
-import { usuarios, paradojas, calcularChaosIndex } from "../datos/datosFalsos";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { obtenerRanking } from "../redux/rankingSlice";
 
 function Ranking() {
-  const grandPhilosopher = [...usuarios].sort((a, b) => b.paradox_score - a.paradox_score);
-
-  const chaosPorCreador = {};
-  paradojas.forEach((p) => {
-    const chaos = calcularChaosIndex(p);
-    if (!(p.creador_id in chaosPorCreador) || chaos > chaosPorCreador[p.creador_id]) {
-      chaosPorCreador[p.creador_id] = chaos;
-    }
+  const dispatch = useDispatch();
+  const ranking = useSelector(function (state) {
+    return state.ranking;
   });
-  const agentOfChaos = [...usuarios].sort(
-    (a, b) => (chaosPorCreador[b.id] || 0) - (chaosPorCreador[a.id] || 0)
-  );
 
-  const contarPorCreador = (predicado) => {
-    const conteo = {};
-    paradojas.filter(predicado).forEach((p) => {
-      conteo[p.creador_id] = (conteo[p.creador_id] || 0) + 1;
-    });
-    return conteo;
-  };
-  const creadas = contarPorCreador(() => true);
-  const resueltas = contarPorCreador((p) => p.estado === "Resolved");
-  const theCreator = [...usuarios].sort((a, b) => (creadas[b.id] || 0) - (creadas[a.id] || 0));
-  const theResolver = [...usuarios].sort((a, b) => (resueltas[b.id] || 0) - (resueltas[a.id] || 0));
+  useEffect(function () {
+    dispatch(obtenerRanking());
+  }, [dispatch]);
+
+  function textoChaos(paradoja) {
+    if (typeof paradoja.chaos_index === "number") {
+      return paradoja.chaos_index.toFixed(1);
+    }
+    return "-";
+  }
 
   const categorias = [
-    { titulo: "Grand Philosopher", lista: grandPhilosopher, valor: (u) => u.paradox_score },
-    { titulo: "Agent of Chaos", lista: agentOfChaos, valor: (u) => (chaosPorCreador[u.id] || 0).toFixed(1) },
-    { titulo: "The Resolver", lista: theResolver, valor: (u) => resueltas[u.id] || 0 },
-    { titulo: "The Creator", lista: theCreator, valor: (u) => creadas[u.id] || 0 },
+    {
+      titulo: "Grand Philosopher",
+      lista: ranking.grandPhilosopher,
+      clave: function (u) { return u._id; },
+      texto: function (u) { return u.username + " - " + u.paradox_score; },
+    },
+    {
+      titulo: "Agent of Chaos",
+      lista: ranking.agentOfChaos,
+      clave: function (p) { return p._id; },
+      texto: function (p) {
+        const creador = p.creador_id ? p.creador_id.username : "desconocido";
+        return creador + " - " + textoChaos(p) + " (" + p.titulo + ")";
+      },
+    },
+    {
+      titulo: "The Resolver",
+      lista: ranking.theResolver,
+      clave: function (u) { return u.usuario; },
+      texto: function (u) { return u.usuario + " - " + u.paradojasResueltas; },
+    },
+    {
+      titulo: "The Creator",
+      lista: ranking.theCreator,
+      clave: function (u) { return u.usuario; },
+      texto: function (u) { return u.usuario + " - " + u.paradojasCreadas; },
+    },
   ];
 
   return (
     <div className="contenedor">
       <h1>Ranking de Filósofos</h1>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-        {categorias.map((cat) => (
-          <div key={cat.titulo} className="tarjeta-paradoja">
-            <ol>
-              {cat.lista.slice(0, 5).map((u) => (
-                <li key={u.id}>{u.username} - {cat.valor(u)}</li>
-              ))}
-            </ol>
-          </div>
-        ))}
-      </div>
+
+      {ranking.cargando && <p>Cargando ranking... (la primera vez puede tardar hasta 1 minuto)</p>}
+      {ranking.error !== "" && <p className="mensaje-error">{ranking.error}</p>}
+
+      {!ranking.cargando && ranking.error === "" && (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          {categorias.map(function (categoria) {
+            return (
+              <div key={categoria.titulo} className="tarjeta-paradoja">
+                <h3>{categoria.titulo}</h3>
+                {categoria.lista.length === 0 ? (
+                  <p>Sin datos todavía.</p>
+                ) : (
+                  <ol>
+                    {categoria.lista.slice(0, 5).map(function (elemento) {
+                      return <li key={categoria.clave(elemento)}>{categoria.texto(elemento)}</li>;
+                    })}
+                  </ol>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

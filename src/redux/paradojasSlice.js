@@ -69,7 +69,7 @@ const paradojasSlice = createSlice({
     detalle: null,
     cargando: false,
     error: "",
-  },dir src\redux
+  },
   reducers: {},
   extraReducers: function (builder) {
     // Enlistar
