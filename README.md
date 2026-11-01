@@ -1,16 +1,45 @@
-# React + Vite
+# ParadoX :
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Frontend
+Aplicación web de ParadoX, una red social donde los usuarios crean y debaten paradojas filosóficas.
 
-Currently, two official plugins are available:
+## Enlaces :
+- Frontend desplegado: https://paradojas-frontend.vercel.app
+- Backend desplegado: https://paradojas-backend.onrender.com
+- Documentación del backend (Swagger): https://paradojas-backend.onrender.com/api-docs
+- Repositorio del backend: https://github.com/MariaJoseMunozSierra/paradojas-proyecto5-backend
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Pruebas :
+Administrador -> Usuario : esceptico_1 -> Contraseña : password123
+Usuario normal -> Usuario : esceptico_2 -> Contraseña : password123
 
-## React Compiler
+## Tecnologías :
+- React con Vite
+- Redux Toolkit
+- React Router
+- Axios, con un interceptor que envía el token JWT en cada petición
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Cómo correrlo en tu computador :
+1. Clona el repositorio
+2. Instala las dependencias:
+   npm install
+3. Crea un archivo `.env` en la raíz (usa `.env.example` como guía):
+   VITE_API_URL=https://paradojas-backend.onrender.com/api
+4. Corre el proyecto:
+   npm run dev
 
-## Expanding the ESLint configuration
+## Funcionalidades :
+- Registro, inicio y cierre de sesión con JWT
+- Rutas protegidas según sesión y rol
+- Crear, ver, editar y eliminar paradojas (eliminar solo para administrador)
+- Debate por capas, votos, duelos y ranking de filósofos
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Endpoints principales : 
+- POST /auth/registro y /auth/login
+- GET, POST, PUT y DELETE /paradojas
+- /respuestas, /votos y /duelos
+- GET /ranking
+
+## Autores : 
+- María José Muñoz (@MariaJoseMunozSierra)
+- Matías Gómez Gutiérrez (@mgomezg1042)
